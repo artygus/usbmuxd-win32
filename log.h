@@ -22,6 +22,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __LOG_H__
 #define __LOG_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 enum loglevel {
 	LL_FATAL = 0,
 	LL_ERROR,
@@ -38,7 +43,10 @@ extern int log_level;
 void log_enable_syslog();
 void log_disable_syslog();
 
-void usbmuxd_log(enum loglevel level, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+void usbmuxd_log(enum loglevel level, const char *fmt, ...);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

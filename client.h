@@ -22,8 +22,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
-#include "usbmuxd-proto.h"
+#include <usbmuxd-proto.h>
 
 struct device_info;
 struct mux_client;
@@ -43,5 +48,9 @@ void client_process(int fd, short events);
 
 void client_init(void);
 void client_shutdown(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

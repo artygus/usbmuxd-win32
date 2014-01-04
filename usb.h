@@ -23,8 +23,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __USB_H__
 #define __USB_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
-#include "utils.h"
+#include <utils.h>
 
 #define INTERFACE_CLASS 255
 #define INTERFACE_SUBCLASS 254
@@ -62,5 +67,9 @@ int usb_discover(void);
 void usb_autodiscover(int enable);
 int usb_process(void);
 int usb_process_timeout(int msec);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

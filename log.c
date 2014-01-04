@@ -1,5 +1,5 @@
 /*
-	usbmuxd - iPhone/iPod Touch USB multiplex server daemon
+    usbmuxd - iPhone/iPod Touch USB multiplex server daemon
 
 Copyright (C) 2009	Hector Martin "marcan" <hector@marcansoft.com>
 Copyright (C) 2009	Nikias Bassen <nikias@gmx.li>
@@ -28,8 +28,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
+#ifdef WIN32
+#include <winsock2.h>
+#include <windows.h>
+#include <libcompat.h>
+#else
 #include <sys/time.h>
-#include <syslog.h>
+#endif
+/* me #include <syslog.h> */
 
 #include "log.h"
 
@@ -39,57 +45,63 @@ int log_syslog = 0;
 
 void log_enable_syslog()
 {
-	if (!log_syslog) {
-		openlog("usbmuxd", LOG_PID, 0);
-		log_syslog = 1;
-	}
+    if (!log_syslog) {
+        /* me openlog("usbmuxd", LOG_PID, 0); */
+        log_syslog = 1;
+    }
 }
 
 void log_disable_syslog()
 {
-	if (log_syslog) {
-		closelog();
-	}
+    if (log_syslog) {
+        //closelog();
+    }
 }
 
 static int level_to_syslog_level(int level)
 {
-	int result = level + LOG_CRIT;
-	if (result > LOG_DEBUG) {
-		result = LOG_DEBUG;
-	}
-	return result;
+    /* me int result = level + LOG_CRIT;
+    if (result > LOG_DEBUG) {
+        result = LOG_DEBUG;
+    }
+    return result;*/
+    return level;
 }
 
 void usbmuxd_log(enum loglevel level, const char *fmt, ...)
 {
-	va_list ap;
-	char *fs;
-	struct timeval ts;
-	struct tm *tp;
+    va_list ap;
+    char *fs;
+    struct timeval ts;
+    struct tm *tp;
 
-	if(level > log_level)
-		return;
+    if(level > log_level)
+        return;
 
-	gettimeofday(&ts, NULL);
-	tp = localtime(&ts.tv_sec);
+    gettimeofday(&ts, NULL);
+#ifdef WIN32
+    time_t tm = (time_t)ts.tv_sec;
+    tp = localtime(&tm);
+#else
+    tp = localtime(&ts.tv_sec);
+#endif
 
-	fs = malloc(20 + strlen(fmt));
+    fs = (char *)malloc(20 + strlen(fmt));
 
-	if(log_syslog) {
-		sprintf(fs, "[%d] %s\n", level, fmt);
-	} else {
-		strftime(fs, 10, "[%H:%M:%S", tp);
-		sprintf(fs+9, ".%03d][%d] %s\n", (int)(ts.tv_usec / 1000), level, fmt);
-	}
+    if(log_syslog) {
+        sprintf(fs, "[%d] %s\n", level, fmt);
+    } else {
+        strftime(fs, 10, "[%H:%M:%S", tp);
+        sprintf(fs+9, ".%03d][%d] %s\n", (int)(ts.tv_usec / 1000), level, fmt);
+    }
 
-	va_start(ap, fmt);
-	if (log_syslog) {
-		vsyslog(level_to_syslog_level(level), fs, ap);
-	} else {
-		vfprintf(stderr, fs, ap);
-	}
-	va_end(ap);
+    va_start(ap, fmt);
+    if (log_syslog) {
+        //vsyslog(level_to_syslog_level(level), fs, ap);
+    } else {
+        vfprintf(stderr, fs, ap);
+    }
+    va_end(ap);
 
-	free(fs);
+    free(fs);
 }
