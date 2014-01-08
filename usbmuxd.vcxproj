@@ -79,7 +79,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(SolutionDir)vendors\libxml2\bin\*.dll" "$(OutDir)"
-xcopy /y "$(SolutionDir)vendors\iconv\bin\*.dll" "$(OutDir)"</Command>
+xcopy /y "$(SolutionDir)vendors\iconv\bin\*.dll" "$(OutDir)"
+xcopy /y "$(SolutionDir)vendors\zlib\bin\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
