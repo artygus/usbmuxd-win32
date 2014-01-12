@@ -180,12 +180,9 @@ static int ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *timeout
 #else if defined(WIN32)
 static int ppoll(struct pollfd *fds, int nfds, const struct timespec *timeout)
 {
-    int ready;
     int to = timeout->tv_sec*1000 + timeout->tv_nsec/1000000;
 
-    ready = WSAPoll(fds, nfds, to);
-
-    return ready;
+    return WSAPoll(fds, nfds, to);
 }
 #endif
 

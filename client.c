@@ -156,7 +156,11 @@ void client_close(struct mux_client *client)
         client->state = CLIENT_DEAD;
         device_abort_connect(client->connect_device, client);
     }
+#ifdef WIN32
+    closesocket(client->fd);
+#else
     close(client->fd);
+#endif
     if(client->ob_buf)
         free(client->ob_buf);
     if(client->ib_buf)
@@ -587,9 +591,13 @@ void client_process(int fd, short events)
             process_recv(client);
         } else if(events & POLLOUT) { //not both in case client died as part of process_recv
             process_send(client);
+        } 
+#ifdef WIN32        
+        else if(events & POLLHUP) {
+            process_recv(client);
         }
+#endif
     }
-
 }
 
 void client_device_add(struct device_info *dev)
