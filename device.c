@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <winsock2.h>
 #include <windows.h>
 #include <libcompat.h>
+#include <netcompat.h>
 #else
 #include <sys/time.h>
 #include <netinet/in.h>
